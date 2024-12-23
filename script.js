@@ -22,8 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
       onComplete: () => {
         pictureAd.style.transition = 'none';
         pictureAd.src = images[index];
-      //pictureAd.style.transform = 'translateX(1%)';
-
+ 
         gsap.to(pictureAd, {
           x: '1%',
           duration: 1,
@@ -88,7 +87,7 @@ const createTimeline = () => {
     ".bespoke-jet-text-huge ",
     { x: "-100%", opacity: 0 },
     {
-      x: `${-25 * scaleFactor}%`,  
+      x: `${-32 * scaleFactor}%`,  
      
       opacity: 1
     },
@@ -121,12 +120,20 @@ const createTimeline = () => {
     "<"
   );
   timeline.to(
-    ".bespoke-jet-text-huge h1, .bespoke-jet-text-huge .ord-text",
+    "#bespoke-jet-text-huge-to-dis",
     {
       display: "none",
     },
     "<" 
   );
+  timeline.to(
+    "#tiny-descr",
+    {
+      color: "black",
+    },
+    "<" 
+  );
+ 
   timeline.to(
     "#picture-ad",
     { 
@@ -148,20 +155,12 @@ const createTimeline = () => {
     { 
      display: "flex",
     },
+    "<",
  
   );
 
 
-  timeline.to (
-    "#tiny-descr",
-    {
-      width: `${currentWidth < 768 ? "15em" : "100%"}`,
-      color: "black",
-      bottom: 0,
-      marginLeft: `${currentWidth < 768 ? "8em" : "20em"}`,
-      left: `${currentWidth < 768 ? "0%" : "6%"}`,
-    }
-  );
+
 
   return timeline;
 };
