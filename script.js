@@ -19,10 +19,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     if (windowWidth < 768) {
-      // Зміна фото без анімації
       pictureAd.src = images[index];
     } else {
-      // Анімація для ширини 768px і більше
       gsap.to(pictureAd, {
         x: '-1%',
         duration: 1,
@@ -37,7 +35,6 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
 
-    // Оновлення індексу
     textIndex.textContent = `${index + 1}/${images.length}`;
   }
 
@@ -49,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function startAutoSlide() {
     autoSlideInterval = setInterval(() => {
       changeSlide(1);
-    }, 3000); 
+    }, 3000);
   }
 
   function stopAutoSlide() {
@@ -68,9 +65,50 @@ document.addEventListener('DOMContentLoaded', function () {
     stopAutoSlide();
     changeSlide(-1);
   });
+
+
+  document.body.addEventListener('click', (event) => {
+    if (event.target.classList.contains('readmore-txt')) {
+      event.preventDefault();
+
+      const newWindow = window.open('', '_blank');
+      if (newWindow) {
+        newWindow.document.write(`
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Read More</title>
+            <style>
+              body {
+                font-family: Arial, sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+                background-color: #f5f5f5;
+              }
+              p {
+                font-size: 1.5em;
+                color: #333;
+              }
+            </style>
+          </head>
+          <body>
+            <p>Details about this feature will be added soon. Stay tuned!</p>
+          </body>
+          </html>
+        `);
+        newWindow.document.close();
+      } else {
+        alert('Unable to open a new window. Please allow pop-ups for this site.');
+      }
+    }
+  });
 });
 
-// Resize event optimization
 
 window.addEventListener("resize", () => {
   clearTimeout(resizeTimeout);
@@ -183,7 +221,7 @@ button.addEventListener("click", () => {
   timeline.reverse(); 
 });
 
-// Resize event optimization
+
 let resizeTimeout;
 window.addEventListener("resize", () => {
   clearTimeout(resizeTimeout);
