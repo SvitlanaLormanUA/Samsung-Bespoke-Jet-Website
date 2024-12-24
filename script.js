@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
+  const windowWidth = window.innerWidth;
   const swiperTexts = document.querySelectorAll('.swiper-txt');
   const images = [
     '/assets/Vacuum Placeholder.png',
@@ -16,19 +17,25 @@ document.addEventListener('DOMContentLoaded', function () {
     swiperTexts.forEach((txt, idx) => {
       txt.style.opacity = idx === index ? 1 : 0;
     });
-    gsap.to(pictureAd, {
-      x: '-1%',
-      duration: 1,
-      onComplete: () => {
-        pictureAd.style.transition = 'none';
-        pictureAd.src = images[index];
- 
-        gsap.to(pictureAd, {
-          x: '1%',
-          duration: 1,
-        });
-      },
-    });
+
+    if (windowWidth < 768) {
+      // Зміна фото без анімації
+      pictureAd.src = images[index];
+    } else {
+      // Анімація для ширини 768px і більше
+      gsap.to(pictureAd, {
+        x: '-1%',
+        duration: 1,
+        onComplete: () => {
+          pictureAd.style.transition = 'none';
+          pictureAd.src = images[index];
+          gsap.to(pictureAd, {
+            x: '1%',
+            duration: 1,
+          });
+        },
+      });
+    }
 
     // Оновлення індексу
     textIndex.textContent = `${index + 1}/${images.length}`;
@@ -63,11 +70,21 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
+// Resize event optimization
+
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(() => {
+    location.reload(); // Перезавантаження для врахування змін у ширині
+  }, 200);
+});
+
 
 const createTimeline = () => {
   const maxWidth = 1710; 
   const currentWidth = window.innerWidth;
-  const scaleFactor = Math.min(currentWidth / maxWidth, 1.5); 
+  const isSmallScreen = currentWidth < 768;
+  const scaleFactor = Math.min(currentWidth / maxWidth, 1.5);
 
   const timeline = gsap.timeline({
     defaults: { duration: 1.5, ease: "power3.out" }
@@ -77,9 +94,8 @@ const createTimeline = () => {
     "#samsung-logo",
     { x: "-100%", opacity: 0 }, 
     { 
-      x: `${ currentWidth < 768 ? 94 : 22 * scaleFactor}%`,
+      x: `${isSmallScreen ? 30 : 22 * scaleFactor}%`,
       opacity: 1,
-   
     }
   );
 
@@ -87,25 +103,22 @@ const createTimeline = () => {
     ".bespoke-jet-text-huge ",
     { x: "-100%", opacity: 0 },
     {
-      x: `${-32 * scaleFactor}%`,  
-     
-      opacity: 1
+      x: `${isSmallScreen ? -10 : -20 * scaleFactor}%`,  
+      opacity: 1,
     },
-    "<" 
+    "<"
   );
 
   timeline.fromTo(
     ".moving-text p",
     { x: "-100%", opacity: 0 },
     {
-      x: `${currentWidth < 768 ? 50 : 10 * scaleFactor}%`,
-   
+      x: `${isSmallScreen ? 20 : 10 * scaleFactor}%`,
       opacity: 1,
       stagger: {
-     
         amount: 0.5,
         from: "start",
-        ease: "power3.out"
+        ease: "power3.out",
       }
     }
   );
@@ -114,53 +127,50 @@ const createTimeline = () => {
     "#samsung-logo",
     { y: 0 }, 
     {
-      y:   -70 * scaleFactor,
-      ease: "power3.out"
+      y: isSmallScreen ? -50 : -92 * scaleFactor,
+      ease: "power3.out",
     },
     "<"
   );
+
   timeline.to(
     "#bespoke-jet-text-huge-to-dis",
     {
       display: "none",
     },
-    "<" 
+    "<"
   );
+
   timeline.to(
     "#tiny-descr",
     {
       color: "black",
     },
-    "<" 
+    "<"
   );
- 
+
   timeline.to(
     "#picture-ad",
-    { 
-      scaleX: 0.5, 
-      transformOrigin: "right", 
-      duration: 1.5,
-      border: "2px solid black",
-    },
-    "<" 
+    isSmallScreen
+      ? { scaleY: 0.7, transformOrigin: "bottom", duration: 1.5 }
+      : { scaleX: 0.5, transformOrigin: "right", duration: 1.5 },
+    "<"
   );
+
   timeline.to(
     ".swiper",
     { 
-     display: "block",
-    },
+      display: "block",
+    }
   );
+
   timeline.to(
     ".swiper-buttons",
     { 
-     display: "flex",
+      display: "flex",
     },
-    "<",
- 
+    "<"
   );
-
-
-
 
   return timeline;
 };
